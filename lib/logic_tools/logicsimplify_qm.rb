@@ -40,12 +40,12 @@ module LogicTools
         ## The bit values covered by the implicant.
         attr_reader :covers
         ## Tell if the implicant is prime or not.
-        attr_reader :prime   
+        attr_reader :prime
         ## The variable associated with the implicant
         #  Do not interfer at all with the class, so
         #  public and fully accessible
-        attr_accessor :var    
-        
+        attr_accessor :var
+
         protected
         attr_writer :covers
         public
@@ -86,12 +86,12 @@ module LogicTools
         end
 
         ## Iterates over the bits of the implicant.
-        # 
+        #
         #  Returns an enumerator if no block given.
         def each(&blk)
             # No block given? Returns an enumerator
             return to_enum(:each) unless block_given?
-            
+
             # Block given? Applies it on each bit.
             @bits.each_char(&blk)
         end
@@ -124,7 +124,7 @@ module LogicTools
             @mask[i] = " " if @bits[i] == "x" # One x less
             @mask[i] = "x" if b == "x"        # One x more
             # Update the bit string
-            @bits[i] = b 
+            @bits[i] = b
         end
 
 
@@ -217,7 +217,7 @@ module LogicTools
         end
     end
 
-    # ## 
+    # ##
     # #  Describes a pseudo variable associated to an implicant.
     # #
     # #  Used for the Petrick's method.
@@ -249,7 +249,14 @@ module LogicTools
     # Enhances the Node class with expression simplifying.
     #++
     class Node
-        
+    def vars2int(vars)
+        res = ""
+        vars.each_with_index do |var,i|
+            res[i] = var.value ? "1" : "0"
+        end
+        res
+    end
+
         ## Generates an equivalent but simplified representation of the
         #  expression represented by the tree rooted by the current node.
         #
@@ -261,7 +268,7 @@ module LogicTools
             end
 
             # Step 1: get the generators
-            
+
             # Gather the minterms which set the function to 1 encoded as
             # bitstrings
             minterms = []
@@ -300,8 +307,8 @@ module LogicTools
                             # Get the next implicant
                             implicant1 = group[i1]
                             # print "implicant1 = #{implicant1}, i1=#{i1}\n"
-                            # No need to look further if the number of 1 of 
-                            # implicant1 is more than one larger than 
+                            # No need to look further if the number of 1 of
+                            # implicant1 is more than one larger than
                             # implicant0's
                             break if implicant1.count > implicant0.count+1
                             # Try to merge
@@ -315,7 +322,7 @@ module LogicTools
                                 # Mark the initial generators as not prime
                                 implicant0.prime = implicant1.prime = false
                             end
-                        end 
+                        end
                         # Is the term prime?
                         if implicant0.prime then
                             # print "implicant0 is prime\n"
@@ -334,11 +341,11 @@ module LogicTools
 
             # Step 2: remove the redundancies by finding the minimal column
             # sets cover from the generators.
-            
+
             # # Select the generators using Petrick's method
             # # For that purpose treat the generators as variables
             # variables = generators.map {|gen| VarImp.new(gen) }
-            # 
+            #
             # # Group the variables by cover
             # cover2gen = Hash.new { |h,k| h[k] = [] }
             # variables.each do |var|
@@ -381,7 +388,7 @@ module LogicTools
             # else
             #     selected = [ smallest.variable.implicant ]
             # end
-           
+
             # Creates the matrix for looking for the minimal column cover:
             # the rows stands for the covers and the columns stands for the
             # generator. A "1" indicates a cover is obtained from the
@@ -406,7 +413,7 @@ module LogicTools
             end
             # Find the minimal column cover.
             # print "matrix=#{matrix}\n"
-            cols = minimal_column_covers(matrix, true) 
+            cols = minimal_column_covers(matrix, true)
 
             # Get the selected generators (implicants).
             selected = cols.map { |col| generators[col] }
@@ -415,7 +422,7 @@ module LogicTools
             if selected.empty? then
                 # false case.
                 return NodeFlase.new
-            elsif selected.size == 1 and 
+            elsif selected.size == 1 and
                 ! selected[0].each.find {|c| c == "1" or c == "0" }
                 # true case
                 return NodeTrue.new
@@ -431,7 +438,7 @@ module LogicTools
             variables = self.get_variables()
             # First generate the prime implicants trees
             selected.map! do |prime|
-                # Generate the litterals 
+                # Generate the litterals
                 litterals = []
                 prime.each.with_index do |c,i|
                     case c
