@@ -266,7 +266,7 @@ module LogicTools
             # bitstrings
             minterms = []
             each_minterm do |vars|
-                minterms << vars2int(vars)
+                minterms << LogicTools::vars2int(vars)
             end
 
             # print "minterms = #{minterms}\n"
@@ -445,14 +445,6 @@ module LogicTools
             end
             # Then generate the final sum tree
             return NodeOr.new(*selected)
-        end
-
-        def vars2int(vars)
-            res = ""
-            vars.each_with_index do |var,i|
-                res[i] = var.value ? "1" : "0"
-            end
-            res
         end
     end
 end
