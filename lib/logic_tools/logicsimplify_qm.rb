@@ -267,6 +267,13 @@ module LogicTools
                 return self.clone
             end
 
+    def vars2int(vars)
+        res = ""
+        vars.each_with_index do |var,i|
+            res[i] = var.value ? "1" : "0"
+        end
+        res
+    end
             # Step 1: get the generators
 
             # Gather the minterms which set the function to 1 encoded as
