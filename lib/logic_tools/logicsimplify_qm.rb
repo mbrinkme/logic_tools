@@ -249,13 +249,13 @@ module LogicTools
     # Enhances the Node class with expression simplifying.
     #++
     class Node
-    def vars2int(vars)
-        res = ""
-        vars.each_with_index do |var,i|
-            res[i] = var.value ? "1" : "0"
+        def vars2int(vars)
+            res = ""
+            vars.each_with_index do |var,i|
+                res[i] = var.value ? "1" : "0"
+            end
+            res
         end
-        res
-    end
 
         ## Generates an equivalent but simplified representation of the
         #  expression represented by the tree rooted by the current node.
