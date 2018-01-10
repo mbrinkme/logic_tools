@@ -247,6 +247,167 @@ module LogicTools
     end
 
 
+    ## Computes the minimal column covers of a boolean +matrix+.
+    #
+    #  If +smallest+ is set to one, the method returns the smallest minimal
+    #  column cover instead.
+    #
+    #  The +matrix+ is assumed to be an array of string, each string
+    #  representing a boolean row ("0" for false and "1" for true).
+    def minimal_column_covers(matrix, smallest = false,
+                              deadline = Float::INFINITY)
+        # print "matrix=#{matrix}\n"
+
+        # Step 1: reduce the matrix for faster processing.
+        # First put appart the essential columns.
+        essentials = []
+        matrix.each do |row|
+            col = nil
+            row.each_byte.with_index do |c,i|
+                # if c == "1" then
+                if c == 49 then
+                    if col then
+                        # The row has several "1", no essential column there.
+                        col = nil
+                        break
+                    end
+                    col = i
+                end
+            end
+            # An essential column is found.
+            essentials << col if col
+        end
+        essentials.uniq!
+        # print "essentials = #{essentials}\n"
+        # The remove the rows covered by essential columns.
+        keep = [ true ] * matrix.size
+        essentials.each do |col|
+            matrix.each.with_index do |row,i|
+                # keep[i] = false if row[col] == "1"
+                keep[i] = false if row.getbyte(col) == 49
+            end
+        end
+        # print "keep = #{keep}\n"
+        reduced = matrix.select.with_index {|row,i| keep[i] }
+        # print "matrix = #{matrix}\n"
+        # print "reduced = #{reduced}\n"
+        if reduced.empty? then
+            # Essentials columns are enough for the cover, end here.
+            if smallest then
+                return essentials
+            else
+                return [ essentials ]
+            end
+        end
+
+        to_optimize = false
+        removed_columns = []
+        begin
+            to_optimize = false
+            # Then remove the dominating rows
+            reduced.uniq!
+            reduced = reduced.select.with_index do |row0,i|
+                ! reduced.find.with_index do |row1,j|
+                    if i == j then
+                        false
+                    else
+                        # The row is dominating if in includes another row.
+                        res = row0.each_byte.with_index.find do |c,j|
+                            # row1[j] == "1" and c == "0"
+                            row1.getbyte(j) == 49 and c == 48
+                        end
+                        # Not dominating if res
+                        !res
+                    end
+                end
+            end
+
+            # # Finally remove the dominated columns if only one column cover
+            # # is required.
+            # if smallest and reduced.size >= 1 then
+            #     size = reduced[0].size
+            #     size.times.reverse_each do |col0|
+            #         next if removed_columns.include?(col0)
+            #         size.times do |col1|
+            #             next if col0 == col1
+            #             # The column is dominated if it is included into another.
+            #             res = reduced.find do |row|
+            #                 row[col0] == "1" and row[col1] == "0"
+            #             end
+            #             # Not dominated if res
+            #             unless res
+            #                 to_optimize = true
+            #                 # print "removing column=#{col0}\n"
+            #                 # Dominated, remove it
+            #                 reduced.each { |row| row[col0] = "0" }
+            #                 removed_columns << col0
+            #             end
+            #         end
+            #     end
+            # end
+        end while(to_optimize)
+
+        # print "now reduced=#{reduced}\n"
+
+        # Step 2: Generate the Petrick's product.
+        product = []
+        reduced.each do |row|
+            term = []
+            # Get the columns covering the row.
+            row.each_byte.with_index do |bit,i|
+                # term << i if bit == "1"
+                term << i if bit == 49
+            end
+            product << term unless term.empty?
+        end
+
+
+        if smallest then
+            if product.empty? then
+                return essentials
+            end
+            cover = smallest_sum_term(product,deadline)
+            if essentials then
+                # print "essentials =#{essentials} cover=#{cover}\n"
+                essentials.each {|cube| cover.unshift(cube) }
+                return cover
+            else
+                return cover
+            end
+        end
+
+        # print "product=#{product}\n"
+        if product.empty? then
+            sum = product
+        else
+            product.each {|fact| fact.sort!.uniq! }
+            product.sort!.uniq!
+            # print "product=#{product}\n"
+            sum = to_sum_product_array(product)
+            # print "sum=#{sum}\n"
+            sum.each {|term| term.uniq! }
+            sum.uniq!
+            sum.sort_by! {|term| term.size }
+            # print "sum=#{sum}\n"
+        end
+
+        # # Add the essentials to the result and return it.
+        # if smallest then
+        #     # print "smallest_cover=#{smallest_cover}, essentials=#{essentials}\n"
+        #     return essentials if sum.empty?
+        #     # Look for the smallest cover
+        #     sum.sort_by! { |cover| cover.size }
+        #     if essentials then
+        #         return sum[0] + essentials
+        #     else
+        #         return sum[0]
+        #     end
+        # else
+            sum.map! { |cover| essentials + cover }
+            return sum
+        # end
+    end
+
 
 
 
