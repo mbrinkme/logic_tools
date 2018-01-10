@@ -12,20 +12,6 @@ require "logic_tools/minimal_column_covers.rb"
 module LogicTools
 
 
-    ## Converts the array of variables +var+ to a bit vector according to
-    #  their values.
-    def vars2int(vars)
-        res = ""
-        vars.each_with_index do |var,i|
-            res[i] = var.value ? "1" : "0"
-        end
-        res
-    end
-
-
-
-
-
     ##
     # Represents a logic implicant.
     class Implicant
@@ -250,6 +236,20 @@ module LogicTools
     #++
     class Node
 
+    ## Converts the array of variables +var+ to a bit vector according to
+    #  their values.
+    def vars2int(vars)
+        res = ""
+        vars.each_with_index do |var,i|
+            res[i] = var.value ? "1" : "0"
+        end
+        res
+    end
+
+
+
+
+
         ## Generates an equivalent but simplified representation of the
         #  expression represented by the tree rooted by the current node.
         #
@@ -266,7 +266,7 @@ module LogicTools
             # bitstrings
             minterms = []
             each_minterm do |vars|
-                minterms << LogicTools::vars2int(vars)
+                minterms << vars2int(vars)
             end
 
             # print "minterms = #{minterms}\n"
