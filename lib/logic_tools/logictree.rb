@@ -820,14 +820,12 @@ module LogicTools
                     # Yes, need parenthesis
                     @str << ( "(" + child.to_s + ")" )
                 else
-            # Convert the children to string a insert "+" between them
-            # @str = @children.join("+")
-
-                    # @str << child.to_s
-                    @str << ( "(" + child.to_s + ")" )
+                    # Convert the children to string a insert "." between them (AND)
+                    @str = @children.join('.')
                 end
             end
-            return @str
+
+            @str
         end
     end
 
@@ -863,7 +861,7 @@ module LogicTools
         ## Converts to a string.
         def to_s # :nodoc:
             return @str if @str
-            # Convert the children to string a insert "+" between them
+            # Convert the children to string a insert "+" between them (OR)
             @str = @children.join("+")
             return @str
         end
