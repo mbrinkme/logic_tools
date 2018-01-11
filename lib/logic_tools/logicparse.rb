@@ -6,15 +6,9 @@
 require 'parslet'
 
 # For building logic tress
-require "logic_tools/logictree.rb"
-
-
-
-
-
+require 'logic_tools/logictree.rb'
 
 module LogicTools
-
     ## The parser of logic expressions.
     class Parser < Parslet::Parser
 
@@ -24,7 +18,7 @@ module LogicTools
         # Variable
         # rule(:var) { match('[A-Za-uw-z]') }
         rule(:var) do
-            match('[A-Za-z]') |
+            match('[A-Za-z0-9]') |
             str("{") >> ( match('[0-9A-Za-z]').repeat ) >> str("}")
         end
         # And operator
@@ -45,7 +39,6 @@ module LogicTools
         rule(:term) { tru.as(:tru) | fal.as(:fal) | var.as(:var) |
                       ( str("(") >> expr >> str(")") ) }
     end
-
 
     ## The logic tree generator from the syntax tree.
     class Transform < Parslet::Transform
@@ -84,14 +77,11 @@ module LogicTools
         end
     end
 
-
-    ## The parser/gerator main fuction: converts the text in +str+ to a 
-    #  logic tree.
+    ## The parser/gerator main fuction: converts the text in +str+ to a logic tree.
     def string2logic(str)
         # Remove the spaces
         str = str.gsub(/\s+/, "")
         # Parse the string
         return Transform.new.apply(Parser.new.parse(str))
     end
-
 end
