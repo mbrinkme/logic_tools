@@ -575,7 +575,7 @@ module LogicTools
             # Handle the trivial case
             if selected.empty? then
                 # false case.
-                return NodeFlase.new
+                return NodeFalse.new
             elsif selected.size == 1 and
                 ! selected[0].each.find {|c| c == "1" or c == "0" }
                 # true case
