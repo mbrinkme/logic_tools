@@ -26,8 +26,8 @@ module LogicTools
         # rule(:orop) { match('[+|v]') }
         rule(:orop) { str('/') }
         # Not operator
-        # rule(:notop) { match('[~!-]') }
-        rule(:notop) { str('-') }
+        rule(:notop) { match('[~!-]') }
+        # rule(:notop) { str('-') }
 
         # Grammar rules
         root(:expr)
