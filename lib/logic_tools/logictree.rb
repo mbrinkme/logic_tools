@@ -808,9 +808,6 @@ module LogicTools
             return nchildren[0].flatten
         end
 
-            # Convert the children to string a insert "+" between them
-            @str = @children.join("+")
-
 
 
         ## Converts to a string.
@@ -823,6 +820,9 @@ module LogicTools
                     # Yes, need parenthesis
                     @str << ( "(" + child.to_s + ")" )
                 else
+            # Convert the children to string a insert "+" between them
+            # @str = @children.join("+")
+
                     # @str << child.to_s
                     @str << ( "(" + child.to_s + ")" )
                 end
