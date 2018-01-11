@@ -23,7 +23,7 @@ module LogicTools
         end
         # And operator
         # rule(:andop) { str("&&") | match('[&\.\*^]') }
-        rule(:andop) { str(".") }
+        rule(:andop) { str(":") }
         # Or operator
         # rule(:orop) { match('[+|v]') }
         rule(:orop) { str("+") }
