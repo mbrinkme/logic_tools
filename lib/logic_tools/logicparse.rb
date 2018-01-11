@@ -17,14 +17,15 @@ module LogicTools
         rule(:fal) { str('0') }
         rule(:var) do
             match('[A-Za-z0-9]') |
-            str('{') >> ( match('[0-9A-Za-z]').repeat ) >> str('}')
+            str('{') >> ( match('[A-Za-z0-9]').repeat ) >> str('}')
         end
         # And operator
         # rule(:andop) { str('&&') | match('[&\.\*^]') }
-        rule(:andop) { str('+') }
+        rule(:andop) { str('∧') }
         # Or operator
         # rule(:orop) { match('[+|v]') }
-        rule(:orop) { str('/') }
+        # rule(:orop) { str('/') }
+        rule(:orop) { str('v') }
         # Not operator
         rule(:notop) { match('[~!-]') }
         # rule(:notop) { str('-') }
