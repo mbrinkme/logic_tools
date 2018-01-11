@@ -7,7 +7,7 @@ require 'forwardable'
 
 module LogicTools
 
-    ## 
+    ##
     # Represents a logical variable.
     class Variable
 
@@ -45,7 +45,7 @@ module LogicTools
             return @@variables.has_key?(name.to_s)
         end
 
-        ## Gets a variable by +name+. 
+        ## Gets a variable by +name+.
         #  If there is no such variable yet, creates it.
         def Variable.get(name)
             var = @@variables[name.to_s]
@@ -70,7 +70,7 @@ module LogicTools
         end
     end
 
-    ## 
+    ##
     # Represents a node of a tree representing a logical expression.
     class Node
 
@@ -118,7 +118,7 @@ module LogicTools
         #  rooted by current node.
         #
         #  Iteration parameters (for the current line of the truth table):
-        #  * +vars+: the variables of the expression 
+        #  * +vars+: the variables of the expression
         #  * +val+:  the value of the expression
         def each_line
             # No block given? Return an enumerator.
@@ -223,7 +223,7 @@ module LogicTools
             return self.dup
         end
 
-        ## Creates a new tree where all the *and*, *or* and *not* operators 
+        ## Creates a new tree where all the *and*, *or* and *not* operators
         #  from the current node are flattened.
         #
         #  Default: simply duplicate.
@@ -303,8 +303,8 @@ module LogicTools
         end
     end
 
-    
-    ## 
+
+    ##
     # Represents a value node.
     class NodeValue < Node
 
@@ -360,7 +360,7 @@ module LogicTools
         end
     end
 
-    ## 
+    ##
     # Represents a true node.
     class NodeTrue < NodeValue
         ## Creates as a NodeValue whose value is true.
@@ -369,7 +369,7 @@ module LogicTools
         end
     end
 
-    ## 
+    ##
     # Represents a false node
     class NodeFalse < NodeValue
         ## Creates as a NodeValue whose value is false.
@@ -379,7 +379,7 @@ module LogicTools
     end
 
 
-    ## 
+    ##
     # Represents a variable node.
     class NodeVar < Node
 
@@ -400,7 +400,7 @@ module LogicTools
             :variable
         end
 
-        # Node::include? is now enough. 
+        # Node::include? is now enough.
         # ## Tells if the +self+ includes +tree+.
         # def include?(tree)
         #     return ( tree.is_a?(NodeVar) and self.variable == tree.variable )
@@ -440,9 +440,9 @@ module LogicTools
         end
     end
 
-    ## 
+    ##
     # Represents an operator node with multiple children.
-    class NodeNary < Node 
+    class NodeNary < Node
         extend Forwardable
 
         attr_reader :op
@@ -468,11 +468,11 @@ module LogicTools
         ## Creates a node with operator +op+ and +children+ (factory method).
         def NodeNary.make(op,*children)
             case op
-            when :or 
+            when :or
                 return NodeOr.new(*children)
             when :and
                 return NodeAnd.new(*children)
-            else 
+            else
                 raise ArgumentError.new("Not a valid operator: #{op}")
             end
         end
@@ -694,7 +694,7 @@ module LogicTools
             return res
         end
 
-        ## Creates a new tree where all the *and*, *or* and *not* operators 
+        ## Creates a new tree where all the *and*, *or* and *not* operators
         #  from the current node are flattened.
         #
         #  Default: simply duplicate.
@@ -728,7 +728,7 @@ module LogicTools
                     self.each do |child0|
                         node.each do |child1|
                             # print "child0=#{child0}, child1=#{child1}\n"
-                            nchildren << 
+                            nchildren <<
                                 NodeNary.make(dop, child0, child1).flatten
                             # print "nchildren=#{nchildren}\n"
                         end
@@ -747,12 +747,12 @@ module LogicTools
         end
     end
 
-    
-    ## 
+
+    ##
     # Represents an AND node
     class NodeAnd < NodeNary
 
-        #  Creates a new AND node with +children+. 
+        #  Creates a new AND node with +children+.
         def initialize(*children)
             super(:and,*children)
         end
@@ -808,6 +808,11 @@ module LogicTools
             return nchildren[0].flatten
         end
 
+            # Convert the children to string a insert "+" between them
+            @str = @children.join("+")
+
+
+
         ## Converts to a string.
         def to_s # :nodoc:
             return @str if @str
@@ -818,7 +823,8 @@ module LogicTools
                     # Yes, need parenthesis
                     @str << ( "(" + child.to_s + ")" )
                 else
-                    @str << child.to_s
+                    # @str << child.to_s
+                    @str << ( "(" + child.to_s + ")" )
                 end
             end
             return @str
@@ -826,11 +832,11 @@ module LogicTools
     end
 
 
-    ## 
+    ##
     # Represents an OR node
     class NodeOr < NodeNary
 
-        #  Creates a new OR node with +children+. 
+        #  Creates a new OR node with +children+.
         def initialize(*children)
             super(:or,*children)
         end
@@ -941,10 +947,10 @@ module LogicTools
         end
     end
 
-    ## 
+    ##
     # Represents a NOT node.
     class NodeNot < NodeUnary
-        ## Creates a NOT node with a +child+. 
+        ## Creates a NOT node with a +child+.
         def initialize(child)
             super(:not,child)
         end
@@ -972,7 +978,7 @@ module LogicTools
             end
         end
 
-        ## Creates a new tree where all the *and*, *or* and *not* operators 
+        ## Creates a new tree where all the *and*, *or* and *not* operators
         #  from the current node are flattened.
         #
         #  Default: simply duplicate.
