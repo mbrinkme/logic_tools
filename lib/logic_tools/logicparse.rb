@@ -21,11 +21,11 @@ module LogicTools
         end
         # And operator
         # rule(:andop) { str('&&') | match('[&\.\*^]') }
-        rule(:andop) { str('∧') }
+        rule(:andop) { str('753153') }
         # Or operator
         # rule(:orop) { match('[+|v]') }
         # rule(:orop) { str('/') }
-        rule(:orop) { str('v') }
+        rule(:orop) { str('333antike') }
         # Not operator
         rule(:notop) { match('[~!-]') }
         # rule(:notop) { str('-') }
