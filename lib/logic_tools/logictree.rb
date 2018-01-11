@@ -818,14 +818,14 @@ module LogicTools
             @children.each do |child|
                 if (child.op == :or) then
                     # Yes, need parenthesis
-                    @str << ( "(" + child.to_s + ")" )
+                    @str << ( "(" + child.to_s + ")." )
                 else
                     # Convert the children to string a insert "." between them (AND)
                     @str = @children.join('.')
                 end
             end
 
-            @str
+            @str.chop if @str.last == '.'
         end
     end
 

@@ -15,10 +15,6 @@ require "logic_tools/logicinput.rb"
 
 include LogicTools
 
-
-
-
-
 ############################
 # The main program
 
@@ -34,15 +30,15 @@ include LogicTools
 #     print "Please enter your expression and end with ^D:\n"
 #     $expr = ARGF.read
 # end
-# 
+#
 # # Parse the expression
 # $parsed = string2logic($expr)
-# 
+#
 # # Generates its disjunctive normal form
 # $dij = $parsed.to_std_disjunctive
-# 
+#
 # # print "Computation done\n"
-# 
+#
 # # Display the result
 # print $dij.to_s, "\n"
 
