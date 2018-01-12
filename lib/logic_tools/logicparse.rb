@@ -77,7 +77,6 @@ module LogicTools
         # Remove the spaces
         str = str.gsub(/\s+/, "")
         # Parse the string
-        byebug
         parsed_string = Parser.new.parse(str)
         transformed_string = Transform.new.apply(parsed_string)
 
