@@ -9,18 +9,14 @@ require 'parslet'
 require 'logic_tools/logictree.rb'
 
 module LogicTools
-    ## The parser of logic expressions.
+    # The parser of logic expressions. Source: http://kschiess.github.io/parslet/
     class Parser < Parslet::Parser
-
         # True / false
         rule(:tru) { str("1") }
         rule(:fal) { str("0") }
         # Variable
         # rule(:var) { match('[A-Za-uw-z]') }
-        rule(:var) do
-            match('[A-Za-z0-9]') |
-            str("{") >> ( match('[0-9A-Za-z]').repeat ) >> str("}")
-        end
+        rule(:var) { match('[0-9A-Za-z]').repeat(1) }
         # And operator
         # rule(:andop) { str("&&") | match('[&\.\*^]') }
         rule(:andop) { str(":") }
@@ -48,7 +44,6 @@ module LogicTools
         rule(:fal => simple(:fal)) { NodeFalse.new() }
         rule(:var => simple(:var)) do
             name = var.to_s
-            name = name[1..-2] if name.size > 1 # Remove the {} if any.
             NodeVar.new(name)
         end
         rule(:notop => simple(:notop)) { "!" }
@@ -82,6 +77,10 @@ module LogicTools
         # Remove the spaces
         str = str.gsub(/\s+/, "")
         # Parse the string
-        return Transform.new.apply(Parser.new.parse(str))
+        byebug
+        parsed_string = Parser.new.parse(str)
+        transformed_string = Transform.new.apply(parsed_string)
+
+        return transformed_string
     end
 end

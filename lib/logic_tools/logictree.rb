@@ -435,7 +435,7 @@ module LogicTools
             result = variable.to_s
             # Variables using more than one character are parenthesized
             # to avoid confunsion with the AND operator.
-            result = "{" + result + "}" if (result.size > 1)
+            # result = "{" + result + "}" if (result.size > 1)
             return result
         end
     end
@@ -825,7 +825,11 @@ module LogicTools
                 end
             end
 
-            @str.chop if @str.last == ':'
+            if @str.last == ':'
+                return @str.chop
+            else
+                return @str
+            end
         end
     end
 
