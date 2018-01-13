@@ -11,11 +11,7 @@ require 'logic_tools/logictree.rb'
 module LogicTools
     # The parser of logic expressions. Source: http://kschiess.github.io/parslet/
     class Parser < Parslet::Parser
-        # True / false
-        rule(:tru) { str("1") }
-        rule(:fal) { str("0") }
         # Variable
-        # rule(:var) { match('[A-Za-uw-z]') }
         rule(:var) { match('[0-9A-Za-z]').repeat(1) }
         # And operator
         # rule(:andop) { str("&&") | match('[&\.\*^]') }
@@ -32,16 +28,13 @@ module LogicTools
         rule(:orexpr) { (andexpr >> ( orop >> andexpr ).repeat).as(:orexpr) }
         rule(:andexpr) { (notexpr >> ( (andop >> notexpr) | notexpr ).repeat).as(:andexpr) }
         rule(:notexpr) { ((notop.as(:notop)).repeat >> term).as(:notexpr) }
-        rule(:term) { tru.as(:tru) | fal.as(:fal) | var.as(:var) |
-                      ( str("(") >> expr >> str(")") ) }
+
+        rule(:term) { var.as(:var) | ( str("(") >> expr >> str(")") ) }
     end
 
     ## The logic tree generator from the syntax tree.
     class Transform < Parslet::Transform
-
         # Terminal rules
-        rule(:tru => simple(:tru)) { NodeTrue.new() }
-        rule(:fal => simple(:fal)) { NodeFalse.new() }
         rule(:var => simple(:var)) do
             name = var.to_s
             NodeVar.new(name)
@@ -76,7 +69,7 @@ module LogicTools
     def string2logic(str)
         # Remove the spaces
         str = str.gsub(/\s+/, "")
-        # Parse the string
+
         parsed_string = Parser.new.parse(str)
         transformed_string = Transform.new.apply(parsed_string)
 
